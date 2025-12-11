@@ -1,4 +1,4 @@
-package com.example.lucky_hub
+package com.mydang.lucky_hub
 
 import io.flutter.embedding.android.FlutterActivity
 
