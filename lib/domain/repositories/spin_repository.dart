@@ -6,7 +6,12 @@ abstract class SpinRepository {
   Future<int> createSpin(Spin spin, List<Item> items);
   Future<void> deleteSpin(int id);
   Future<List<Item>> getItemsBySpinId(int spinId);
-  Future<void> saveResult(int spinId, int itemId, String itemLabel);
+  Future<void> saveResult(
+    int spinId,
+    int itemId,
+    String itemLabel, {
+    required bool wasRemoved,
+  });
   Future<List<Map<String, dynamic>>> getResultsBySpinId(int spinId);
   Future<void> deleteItem(int itemId);
   Future<void> addItem(int spinId, Item item);
@@ -14,6 +19,7 @@ abstract class SpinRepository {
 
   /// Xóa tất cả results của một spin (dùng khi restore items)
   Future<void> deleteResultsBySpinId(int spinId);
+  Future<void> deleteRemovedResultsBySpinId(int spinId);
 
   /// Thay thế toàn bộ items của một spin (dùng khi shuffle)
   Future<void> replaceItems(int spinId, List<Item> newItems);

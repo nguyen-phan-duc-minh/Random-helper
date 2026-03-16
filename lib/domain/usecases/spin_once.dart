@@ -40,11 +40,6 @@ class SpinOnce {
     // Fallback về item đầu tiên nếu không tìm thấy (không nên xảy ra)
     selectedItem ??= items.first;
 
-    // Lưu kết quả nếu có id
-    if (selectedItem.id != null) {
-      await repository.saveResult(spinId, selectedItem.id!, selectedItem.label);
-    }
-
     return selectedItem;
   }
 }

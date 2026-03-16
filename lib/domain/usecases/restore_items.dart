@@ -18,20 +18,24 @@ class RestoreItems {
       return 0; // Không có gì để khôi phục
     }
 
-    // Lấy danh sách labels từ results (loại bỏ trùng lặp nếu có)
-    final restoredLabels = <String>{};
-    for (var result in results) {
-      final label = result['item_label'] as String?;
-      if (label != null && label.isNotEmpty) {
-        restoredLabels.add(label);
-      }
+    // Chỉ khôi phục các lượt quay đã loại mục (was_removed = 1)
+    final removedResults = results.where((r) {
+      final removed = r['was_removed'];
+      return (removed is int && removed == 1) || (removed is bool && removed == true);
+    }).toList();
+
+    if (removedResults.isEmpty) {
+      return 0; // Không có mục nào bị loại để khôi phục
     }
 
-    // Tạo lại items với weight=1 và color=null (mặc định)
+    // Tạo lại items theo đúng các lượt đã bị loại.
+    // (Giữ được cả trường hợp label trùng nhau)
     int restoredCount = 0;
-    for (var label in restoredLabels) {
+    for (var result in removedResults) {
+      final label = result['item_label'] as String?;
+      if (label == null || label.trim().isEmpty) continue;
       final item = Item(
-        label: label,
+        label: label.trim(),
         weight: 1, // Mặc định
         color: null, // Không lưu color trong results nên để null
       );
@@ -39,8 +43,8 @@ class RestoreItems {
       restoredCount++;
     }
 
-    // Xóa tất cả results sau khi khôi phục (reset lịch sử)
-    await repository.deleteResultsBySpinId(spinId);
+    // Xóa các results "đã loại" sau khi khôi phục (giữ lại lịch sử không loại)
+    await repository.deleteRemovedResultsBySpinId(spinId);
 
     return restoredCount;
   }

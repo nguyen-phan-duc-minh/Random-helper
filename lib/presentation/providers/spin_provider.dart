@@ -83,7 +83,36 @@ class SpinProvider extends ChangeNotifier {
   Future<Item> spinOnce(int spinId) async {
     try {
       _error = null;
-      return await _spinOnce.execute(spinId);
+      final chosen = await _spinOnce.execute(spinId);
+      if (chosen.id != null) {
+        await repository.saveResult(
+          spinId,
+          chosen.id!,
+          chosen.label,
+          wasRemoved: false,
+        );
+      }
+      return chosen;
+    } catch (e) {
+      _error = 'Lỗi khi quay: ${e.toString()}';
+      notifyListeners();
+      rethrow;
+    }
+  }
+
+  Future<Item> spinOnceWithMode(int spinId, {required bool removeAfterSpin}) async {
+    try {
+      _error = null;
+      final chosen = await _spinOnce.execute(spinId);
+      if (chosen.id != null) {
+        await repository.saveResult(
+          spinId,
+          chosen.id!,
+          chosen.label,
+          wasRemoved: removeAfterSpin,
+        );
+      }
+      return chosen;
     } catch (e) {
       _error = 'Lỗi khi quay: ${e.toString()}';
       notifyListeners();
@@ -200,6 +229,18 @@ class SpinProvider extends ChangeNotifier {
       return count;
     } catch (e) {
       _error = 'Lỗi khi khôi phục items: ${e.toString()}';
+      notifyListeners();
+      rethrow;
+    }
+  }
+
+  Future<void> clearHistory(int spinId) async {
+    try {
+      _error = null;
+      await repository.deleteResultsBySpinId(spinId);
+      notifyListeners();
+    } catch (e) {
+      _error = 'Lỗi khi xóa lịch sử: ${e.toString()}';
       notifyListeners();
       rethrow;
     }

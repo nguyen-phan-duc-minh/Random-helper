@@ -64,7 +64,18 @@ class WheelViewState extends State<WheelView>
   /// Kiểm tra xem vòng quay có đang quay không
   bool isSpinning() => _isSpinning;
 
-  Future<void> spinToIndex(int targetIndex) async {
+  double _norm(double v) {
+    final twoPi = 2 * pi;
+    return (v % twoPi + twoPi) % twoPi;
+  }
+
+  Future<void> spinToIndex(
+    int targetIndex, {
+    int? durationMs,
+    int? minTurns,
+    int? maxTurns,
+    bool clockwise = true,
+  }) async {
     // Nếu đang quay thì không cho quay tiếp
     if (_isSpinning) {
       return;
@@ -74,25 +85,37 @@ class WheelViewState extends State<WheelView>
     if (n == 0) return;
     final segmentAngle = 2 * pi / n;
     final midAngleOfSegment = (targetIndex * segmentAngle) + segmentAngle / 2;
-    final fullTurns = AppConstants.minFullTurns +
-        Random().nextInt(
-          AppConstants.maxFullTurns - AppConstants.minFullTurns + 1,
-        );
-    final targetRotation = -pi / 2 - midAngleOfSegment + fullTurns * 2 * pi;
+    final minT = minTurns ?? AppConstants.minFullTurns;
+    final maxT = maxTurns ?? AppConstants.maxFullTurns;
+    final safeMin = minT < 0 ? 0 : minT;
+    final safeMax = maxT < safeMin ? safeMin : maxT;
+    final fullTurns =
+        safeMin + Random().nextInt((safeMax - safeMin) + 1);
+    // Góc "đúng" để pointer chỉ vào segment target (theo modulo 2π)
+    final base = -pi / 2 - midAngleOfSegment;
 
     final start = _rotation;
-    final end = targetRotation;
+    final startMod = _norm(start);
+    final targetMod = _norm(base);
+
+    double deltaMod;
+    if (clockwise) {
+      deltaMod = _norm(targetMod - startMod);
+      // Luôn quay tiến (1 hướng), tối thiểu fullTurns vòng
+      deltaMod += fullTurns * 2 * pi;
+    } else {
+      deltaMod = _norm(startMod - targetMod);
+      deltaMod = -(deltaMod + fullTurns * 2 * pi);
+    }
+    final end = start + deltaMod;
 
     // Sử dụng spinDuration tùy chỉnh nếu có, nếu không thì dùng random
-    int duration;
-    if (widget.spinDuration != null) {
-      duration = widget.spinDuration!;
-    } else {
-      duration = AppConstants.minSpinDuration +
-          Random().nextInt(
-            AppConstants.maxSpinDuration - AppConstants.minSpinDuration + 1,
-          );
-    }
+    final duration = durationMs ??
+        widget.spinDuration ??
+        (AppConstants.minSpinDuration +
+            Random().nextInt(
+              AppConstants.maxSpinDuration - AppConstants.minSpinDuration + 1,
+            ));
 
     // Đánh dấu đang quay
     setState(() {

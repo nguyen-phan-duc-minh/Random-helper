@@ -64,13 +64,19 @@ class SpinRepositoryImpl implements SpinRepository {
   }
 
   @override
-  Future<void> saveResult(int spinId, int itemId, String itemLabel) async {
+  Future<void> saveResult(
+    int spinId,
+    int itemId,
+    String itemLabel, {
+    required bool wasRemoved,
+  }) async {
     final db = await _dbHelper.database;
     await db.insert('results', {
       'spin_id': spinId,
       'item_id': itemId,
       'item_label': itemLabel,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
+      'was_removed': wasRemoved ? 1 : 0,
     });
   }
 
@@ -126,6 +132,16 @@ class SpinRepositoryImpl implements SpinRepository {
   Future<void> deleteResultsBySpinId(int spinId) async {
     final db = await _dbHelper.database;
     await db.delete('results', where: 'spin_id = ?', whereArgs: [spinId]);
+  }
+
+  @override
+  Future<void> deleteRemovedResultsBySpinId(int spinId) async {
+    final db = await _dbHelper.database;
+    await db.delete(
+      'results',
+      where: 'spin_id = ? AND was_removed = ?',
+      whereArgs: [spinId, 1],
+    );
   }
 
   @override

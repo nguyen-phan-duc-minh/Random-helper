@@ -7,7 +7,7 @@ import '../../core/utils/constants.dart';
 
 class DBHelper {
   static const _dbName = AppConstants.dbName;
-  static const _dbVersion = 4;
+  static const _dbVersion = 5;
   static Database? _database;
 
   DBHelper._privateConstructor();
@@ -63,6 +63,18 @@ class DBHelper {
         // Cột đã tồn tại hoặc lỗi, bỏ qua
       }
     }
+    if (oldVersion < 5) {
+      // Thêm cột was_removed vào results cho version 5
+      try {
+        await db.execute(
+          'ALTER TABLE results ADD COLUMN was_removed INTEGER DEFAULT 0',
+        );
+        // Trước version 5, app luôn loại mục sau khi quay => toàn bộ lịch sử cũ được xem là "đã loại"
+        await db.execute('UPDATE results SET was_removed = 1');
+      } catch (e) {
+        // Cột đã tồn tại hoặc lỗi, bỏ qua
+      }
+    }
   }
 
   Future _onCreate(Database db, int version) async {
@@ -94,7 +106,8 @@ class DBHelper {
         spin_id INTEGER NOT NULL,
         item_id INTEGER NOT NULL,
         item_label TEXT NOT NULL,
-        timestamp INTEGER NOT NULL
+        timestamp INTEGER NOT NULL,
+        was_removed INTEGER DEFAULT 0
       )
     ''');
   }
