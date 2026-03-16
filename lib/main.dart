@@ -7,11 +7,11 @@ import 'presentation/providers/theme_provider.dart';
 import 'presentation/pages/main_dashboard.dart';
 
 void main() {
-  runApp(const LuckyHubApp());
+  runApp(const RandomHelperApp());
 }
 
-class LuckyHubApp extends StatelessWidget {
-  const LuckyHubApp({super.key});
+class RandomHelperApp extends StatelessWidget {
+  const RandomHelperApp({super.key});
 
   @override
   Widget build(BuildContext context) {
