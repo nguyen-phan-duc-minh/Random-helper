@@ -1,6 +1,7 @@
 # 🎡 Random Helper
 
 A simple and intuitive lucky wheel app for making quick, fair decisions. Perfect for choosing what to eat, picking team members, or organizing activities.
+
 [![Flutter](https://img.shields.io/badge/Flutter-3.5.0%2B-blue)](https://flutter.dev)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](#license)
 [![Version](https://img.shields.io/badge/Version-1.0.1-informational)](#about)
@@ -56,53 +57,58 @@ flutter build apk --release
 - `uuid: ^3.0.7` - Unique ID generation
 
 ## 📁 Project Structure
-
 ```
 
-lib/
-├── main.dart # App entry point
-├── core/
-│ └── utils/
-│ ├── theme.dart # Dark/Light themes
-│ ├── constants.dart # App constants
-│ ├── templates.dart # 15+ spin templates
-│ ├── color_palettes.dart # Color schemes
-│ ├── sort_options.dart # Sorting utilities
-│ └── vietnamese_helper.dart # Localization
-├── data/
-│ ├── local/
-│ │ └── db_helper.dart # SQLite database manager
-│ └── repositories/
-│ └── spin_repository_impl.dart # Data layer implementation
-├── domain/
-│ ├── entities/ # Data models (spin, item, template)
-│ ├── repositories/ # Repository interfaces
-│ └── usecases/
-│ ├── create_spin.dart
-│ ├── spin_once.dart
-│ ├── get_spins.dart
-│ ├── shuffle_items.dart
-│ └── restore_items.dart
-└── presentation/
-├── pages/
-│ ├── main_dashboard.dart # Bottom navigation host
-│ ├── home_page.dart # Wheels list & search
-│ ├── spin_page.dart # Wheel spin screen
-│ ├── create_spin_page.dart # Create new wheel
-│ ├── edit_spin_page.dart # Edit wheel
-│ ├── history_page.dart # Spin history
-│ ├── favorite_spins_page.dart # Bookmarked wheels
-│ ├── suggestions_page.dart # Template browser
-│ └── settings_page.dart # App settings
-├── providers/
-│ ├── spin_provider.dart # Main state management
-│ └── theme_provider.dart # Theme toggle
-└── widgets/
-└── wheel_view.dart # Animated wheel widget
+Random-helper/
+├── lib/
+│ ├── main.dart # App entry point
+│ ├── core/
+│ │ └── utils/
+│ │ ├── theme.dart # Dark/Light themes
+│ │ ├── constants.dart # App constants
+│ │ ├── templates.dart # Spin templates
+│ │ ├── color_palettes.dart # Color schemes
+│ │ ├── sort_options.dart # Sorting utilities
+│ │ └── vietnamese_helper.dart # Localization
+│ ├── data/
+│ │ ├── local/
+│ │ │ └── db_helper.dart # SQLite database manager
+│ │ ├── repositories/
+│ │ │ └── spin_repository_impl.dart # Data layer implementation
+│ ├── domain/
+│ │ ├── entities/ # Data models (spin, item, template)
+│ │ ├── repositories/ # Repository interfaces
+│ │ └── usecases/
+│ │ ├── create_spin.dart
+│ │ ├── spin_once.dart
+│ │ ├── get_spins.dart
+│ │ ├── shuffle_items.dart
+│ │ └── restore_items.dart
+│ ├── presentation/
+│ │ ├── pages/
+│ │ │ ├── main_dashboard.dart # Bottom navigation host
+│ │ │ ├── home_page.dart # Wheels list & search
+│ │ │ ├── spin_page.dart # Wheel spin screen
+│ │ │ ├── create_spin_page.dart # Create new wheel
+│ │ │ ├── edit_spin_page.dart # Edit wheel
+│ │ │ ├── history_page.dart # Spin history
+│ │ │ ├── favorite_spins_page.dart # Bookmarked wheels
+│ │ │ ├── suggestions_page.dart # Template browser
+│ │ │ └── settings_page.dart # App settings
+│ │ ├── providers/
+│ │ │ ├── spin_provider.dart # Main state management
+│ │ │ └── theme_provider.dart # Theme toggle
+│ │ └── widgets/
+│ │ └── wheel_view.dart # Animated wheel widget
+├── assets/ # App assets & icons
+├── android/ # Android native code
+├── ios/ # iOS native code
+├── web/ # Web platform
+├── pubspec.yaml # Dependencies & configuration
+├── analysis_options.yaml # Lint rules
+└── README.md # Project documentation
 
 ````
-
-## 🚀 Quick Start
 
 ```bash
 # Clone repository
